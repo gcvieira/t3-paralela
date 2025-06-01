@@ -5,7 +5,7 @@
 #define ARRAY_SIZE 40      // trabalho final com o valores 10.000, 100.000, 1.000.000
 
 /* recebe um ponteiro para um vetor que contem as mensagens recebidas dos filhos e            */
-/* intercala estes valores em um terceiro vetor auxiliar. Devolve um ponteiro para este vetor */          */
+/* intercala estes valores em um terceiro vetor auxiliar. Devolve um ponteiro para este vetor */
 
 int *interleaving(int vetor[], int tam) {
 	int *vetor_auxiliar;
