@@ -27,7 +27,6 @@ int *interleaving(int vetor[], int tam) {
 
 void bs(int n, int * vetor) {
     int c=0, d, troca, trocou =1;
-
     while (c < (n-1) & trocou ) {
         trocou = 0;
         for (d = 0 ; d < n - c - 1; d++)
@@ -45,39 +44,33 @@ void bs(int n, int * vetor) {
 int main() {
     int vetor[ARRAY_SIZE];
     int i;
-
 	/*
     for (i=0 ; i<ARRAY_SIZE; i++) vetor[i] = ARRAY_SIZE-i;
-
     #ifdef DEBUG
 	// print unsorted array
     printf("\nVetor original:\n");
     for (i=0 ; i<ARRAY_SIZE; i++) printf("[%03d] ", vetor[i]);
 	printf("\n");
     #endif
-
 	// sort array
     bs(ARRAY_SIZE, vetor);
-
     #ifdef DEBUG
 	// print sorted array
     printf("\nVetor sorted:\n");
     for (i=0 ; i<ARRAY_SIZE; i++) printf("[%03d] ", vetor[i]);
 	printf("\n");
     #endif
-	// END SEQUENCIAL
 	*/
 
-	// START MPI
 	MPI_Init();
 	my_rank = MPI_Comm_rank();  // pega pega o numero do processo atual (rank)
 
 	// recebo vetor
 	if ( my_rank != 0 ) {
-		MPI_Recv (vetor, pai);                        // não sou a raiz, tenho pai
+		MPI_Recv(vetor, pai);                        // não sou a raiz, tenho pai
 		MPI_Get_count(&Status, MPI_INT, &tam_vetor);  // descubro tamanho da mensagem recebida
 	} else {
-		//tam_vetor = VETOR_SIZE;        // defino tamanho inicial do vetor
+		tam_vetor = VETOR_SIZE;        // defino tamanho inicial do vetor
 		//inicializaVetor(vetor, tam_vetor);  // sou a raiz e portanto gero o vetor - ordem reversa
 		for (i=0 ; i<ARRAY_SIZE; i++) vetor[i] = ARRAY_SIZE-i;
 
@@ -101,7 +94,7 @@ int main() {
 		// intercalo vetor inteiro
 		//intercala(vetor);
 		int *vetor_auxiliar; // ponteiro para o vetor resultantes que sera alocado dentro da rotina
-		vetor_auxiliar = interleaving(vetor, tam);
+		vetor_auxiliar = interleaving(vetor, tam_vetor);
 	}
 
 	// mando para o pai
@@ -113,7 +106,6 @@ int main() {
 		for (i=0 ; i<ARRAY_SIZE; i++) printf("[%03d] ", vetor[i]);
 		printf("\n");
 	}
-
 	MPI_Finalize();
 	return 0;
 }
