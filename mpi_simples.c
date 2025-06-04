@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <mpi.h>
 
 #define DEBUG 1            // comentar esta linha quando for medir tempo
 #define ARRAY_SIZE 40      // trabalho final com o valores 10.000, 100.000, 1.000.000
@@ -42,8 +43,13 @@ void bs(int n, int * vetor) {
 }
 
 int main() {
-    int vetor[ARRAY_SIZE];
+    int vetor[ARRAY_SIZE]; // vetor
+	int tam_vetor;         // tamanho vetor
+	int my_rank, comm_sz;  // mpi rank
+	int proc_n;            // nro processos
     int i;
+	MPI_Status status;
+
 	/*
     for (i=0 ; i<ARRAY_SIZE; i++) vetor[i] = ARRAY_SIZE-i;
     #ifdef DEBUG
@@ -63,14 +69,16 @@ int main() {
 	*/
 
 	MPI_Init();
-	my_rank = MPI_Comm_rank();  // pega pega o numero do processo atual (rank)
+	//my_rank = MPI_Comm_rank();  // pega o numero do processo atual (rank)
+	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank );
+	MPI_Comm_size(MPI_COMM_WORLD, &proc_n );
 
 	// recebo vetor
 	if ( my_rank != 0 ) {
 		MPI_Recv(vetor, pai);                        // não sou a raiz, tenho pai
 		MPI_Get_count(&Status, MPI_INT, &tam_vetor);  // descubro tamanho da mensagem recebida
 	} else {
-		tam_vetor = VETOR_SIZE;        // defino tamanho inicial do vetor
+		tam_vetor = ARRAY_SIZE;        // defino tamanho inicial do vetor
 		//inicializaVetor(vetor, tam_vetor);  // sou a raiz e portanto gero o vetor - ordem reversa
 		for (i=0 ; i<ARRAY_SIZE; i++) vetor[i] = ARRAY_SIZE-i;
 
@@ -79,17 +87,20 @@ int main() {
 		printf("\n");
 	}
 
+	// delta = limite para decidir se divide ou conquista
+	int delta = 4;
+
 	// dividir ou conquistar?
-	if ( tam_vetor <= delta ) BubbleSort(vetor);  // conquisto
+	if ( tam_vetor <= delta ) bs(tam_vetor, vetor);  // conquisto
 	else {
 		// dividir
 		// quebrar em duas partes e mandar para os filhos
-		MPI_Send(&vetor[0], filho esquerda, tam_vetor/2);  // mando metade inicial do vetor
-		MPI_Send(&vetor[tam_vetor/2], filho direita, tam_vetor/2);  // mando metade final
+		MPI_Send(&vetor[0], tam_vetor/2, MPI_INT, filho esquerda, MPI_COMM_WORLD);  // mando metade inicial do vetor
+		MPI_Send(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho direita, MPI_COMM_WORLD);  // mando metade final
 
 		// receber dos filhos
-		MPI_Recv(&vetor[0], filho esquerda);
-		MPI_Recv(&vetor[tam_vetor/2], filho direita);
+		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, filho esquerda, MPI_COMM_WORLD);
+		MPI_Recv(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho direita, MPI_COMM_WORLD);
 
 		// intercalo vetor inteiro
 		//intercala(vetor);
@@ -98,7 +109,7 @@ int main() {
 	}
 
 	// mando para o pai
-	if ( my_rank !=0 ) MPI_Send(vetor,pai,tam_vetor);  // tenho pai, retorno vetor ordenado pra ele
+	if ( my_rank !=0 ) MPI_Send(vetor,tam_vetor,MPI_INT,pai,MPI_COMM_WORLD);  // tenho pai, retorno vetor ordenado pra ele
 	else {
 		//Mostra(vetor);  // sou o raiz, mostro vetor
 		// TODO: review: esse maybe eh o vetor_auxiliar
