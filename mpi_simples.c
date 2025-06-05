@@ -69,9 +69,11 @@ int main() {
 	*/
 
 	MPI_Init();
-	//my_rank = MPI_Comm_rank();  // pega o numero do processo atual (rank)
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank );
 	MPI_Comm_size(MPI_COMM_WORLD, &proc_n );
+
+	// pega o numero do processo atual (rank)
+	//my_rank = MPI_Comm_rank();
 
 	// recebo vetor
 	if ( my_rank != 0 ) {
@@ -94,13 +96,16 @@ int main() {
 	if ( tam_vetor <= delta ) bs(tam_vetor, vetor);  // conquisto
 	else {
 		// dividir
+		filho_esquerda = my_rank*2+1;
+		filho_direita = my_rank*2+2;
+
 		// quebrar em duas partes e mandar para os filhos
-		MPI_Send(&vetor[0], tam_vetor/2, MPI_INT, filho esquerda, MPI_COMM_WORLD);  // mando metade inicial do vetor
-		MPI_Send(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho direita, MPI_COMM_WORLD);  // mando metade final
+		MPI_Send(&vetor[0], tam_vetor/2, MPI_INT, filho_esquerda, MPI_COMM_WORLD);  // mando metade inicial do vetor
+		MPI_Send(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, MPI_COMM_WORLD);  // mando metade final
 
 		// receber dos filhos
-		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, filho esquerda, MPI_COMM_WORLD);
-		MPI_Recv(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho direita, MPI_COMM_WORLD);
+		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, filho_esquerda, MPI_COMM_WORLD);
+		MPI_Recv(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, MPI_COMM_WORLD);
 
 		// intercalo vetor inteiro
 		//intercala(vetor);
