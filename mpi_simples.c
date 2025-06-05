@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 	}
 
 	// delta = limite para decidir se divide ou conquista
-	int delta = 4;
+	int delta = 10;
 
 	// dividir ou conquistar?
 	if ( tam_vetor <= delta ) bs(tam_vetor, vetor);  // conquisto
