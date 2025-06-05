@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
 	// recebo vetor
 	if ( my_rank != 0 ) {
 		// não sou a raiz, tenho pai
-		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, status);
+		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 		MPI_Get_count(&status, MPI_INT, &tam_vetor);  // descubro tamanho da mensagem recebida
 	} else {
 		tam_vetor = ARRAY_SIZE;        // defino tamanho inicial do vetor
@@ -106,8 +106,8 @@ int main(int argc, char** argv) {
 		MPI_Send(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, 0, MPI_COMM_WORLD);  // mando metade final
 
 		// receber dos filhos
-		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, filho_esquerda, 0, MPI_COMM_WORLD, status);
-		MPI_Recv(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, 0, MPI_COMM_WORLD, status);
+		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, filho_esquerda, 0, MPI_COMM_WORLD, &status);
+		MPI_Recv(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, 0, MPI_COMM_WORLD, &status);
 
 		// intercalo vetor inteiro
 		//intercala(vetor);
