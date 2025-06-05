@@ -42,7 +42,7 @@ void bs(int n, int * vetor) {
         }
 }
 
-int main() {
+int main(int argc, char** argv) {
     int vetor[ARRAY_SIZE]; // vetor
 	int tam_vetor;         // tamanho vetor
 	int my_rank;           // (my) mpi rank
@@ -69,9 +69,9 @@ int main() {
     #endif
 	*/
 
-	MPI_Init();
-	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank );
-	MPI_Comm_size(MPI_COMM_WORLD, &proc_n );
+	MPI_Init(&argc, &argv);
+	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &proc_n);
 
 	// pega o numero do processo atual (rank)
 	//my_rank = MPI_Comm_rank();
@@ -79,7 +79,7 @@ int main() {
 	// recebo vetor
 	if ( my_rank != 0 ) {
 		// não sou a raiz, tenho pai
-		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD);
+		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, status);
 		MPI_Get_count(&status, MPI_INT, &tam_vetor);  // descubro tamanho da mensagem recebida
 	} else {
 		tam_vetor = ARRAY_SIZE;        // defino tamanho inicial do vetor
@@ -106,8 +106,8 @@ int main() {
 		MPI_Send(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, 0, MPI_COMM_WORLD);  // mando metade final
 
 		// receber dos filhos
-		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, filho_esquerda, 0, MPI_COMM_WORLD);
-		MPI_Recv(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, 0, MPI_COMM_WORLD);
+		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, filho_esquerda, 0, MPI_COMM_WORLD, status);
+		MPI_Recv(&vetor[tam_vetor/2], tam_vetor/2, MPI_INT, filho_direita, 0, MPI_COMM_WORLD, status);
 
 		// intercalo vetor inteiro
 		//intercala(vetor);
