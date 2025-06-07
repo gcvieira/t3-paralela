@@ -79,8 +79,10 @@ int main(int argc, char** argv) {
 	// recebo vetor
 	if ( my_rank != 0 ) {
 		// não sou a raiz, tenho pai
-		MPI_Recv(&vetor[0], tam_vetor/2, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+		//MPI_Probe(origem, tag, MPI_COMM_WORLD, &status);
+		MPI_Recv(&vetor[0], ARRAY_SIZE, MPI_INT, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 		MPI_Get_count(&status, MPI_INT, &tam_vetor);  // descubro tamanho da mensagem recebida
+		pai = status.MPI_SOURCE;
 	} else {
 		tam_vetor = ARRAY_SIZE;        // defino tamanho inicial do vetor
 		//inicializaVetor(vetor, tam_vetor);  // sou a raiz e portanto gero o vetor - ordem reversa
