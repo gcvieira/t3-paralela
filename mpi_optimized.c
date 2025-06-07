@@ -161,6 +161,7 @@ my_topmost_level_mpi (int my_rank)
 	return level;
 }
 
+
 // MPI merge sort
 	void
 mergesort_parallel_mpi (int a[], int size, int temp[],
@@ -197,6 +198,21 @@ mergesort_parallel_mpi (int a[], int size, int temp[],
 	void
 mergesort_serial (int a[], int size, int temp[])
 {
+	// Sort entire array using bubble sort
+	int i, j;
+	for (i = 0; i < size - 1; i++) {
+		for (j = 0; j < size - i - 1; j++) {
+			if (a[j] > a[j + 1]) {
+				int tmp = a[j];
+				a[j] = a[j + 1];
+				a[j + 1] = tmp;
+			}
+		}
+	}
+}
+
+/*
+void mergesort_serial (int a[], int size, int temp[]) {
 	// Switch to insertion sort for small arrays
 	if (size <= SMALL)
 	{
@@ -208,10 +224,9 @@ mergesort_serial (int a[], int size, int temp[])
 	// Merge the two sorted subarrays into a temp array
 	merge (a, size, temp);
 }
+*/
 
-	void
-merge (int a[], int size, int temp[])
-{
+void merge (int a[], int size, int temp[]) {
 	int i1 = 0;
 	int i2 = size / 2;
 	int tempi = 0;
@@ -243,21 +258,4 @@ merge (int a[], int size, int temp[])
 	}
 	// Copy sorted temp array into main array, a
 	memcpy (a, temp, size * sizeof (int));
-}
-
-	void
-insertion_sort (int a[], int size)
-{
-	int i;
-	for (i = 0; i < size; i++)
-	{
-		int j, v = a[i];
-		for (j = i - 1; j >= 0; j--)
-		{
-			if (a[j] <= v)
-				break;
-			a[j + 1] = a[j];
-		}
-		a[j + 1] = v;
-	}
 }
