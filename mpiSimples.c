@@ -89,10 +89,18 @@ int main(int argc, char **argv) {
 	} else {
 #ifdef DEBUG
 		printf("\nVetor sorted:\n");
-		for (i = 0; i < ARRAY_SIZE; i++) printf("[%03d] ", vetor[i]);
+		for (i = 0; i < ARRAY_SIZE; i++){
+			if (!(vetor[i - 1] <= vetor[i])) {
+				printf ("Implementation error: v[%d]=%d > v[%d]=%d\n", i - 1, vetor[i - 1], i, vetor[i]);
+				MPI_Abort (MPI_COMM_WORLD, 1);
+			}
+			printf("[%03d] ", vetor[i]);
+		}
 		printf("\n");
 #endif
 	}
+
+	printf("Finalizado sem erros.");
 
 	MPI_Finalize();
 	return 0;
