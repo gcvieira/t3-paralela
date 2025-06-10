@@ -9,4 +9,7 @@ Sequencial:
 	./s
 
 mpi:
-TBD
+	ladcomp -env mpicc mpiSimples.c -o mpis
+	ladcomp -env mpicc mpi_optimized.c -o mpio -lm
+	srun -N 1 -n 7 ./mpis
+	srun -N 1 -n 8 ./mpio 90000

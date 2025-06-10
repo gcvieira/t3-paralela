@@ -99,6 +99,7 @@ main (int argc, char *argv[])
 						a[i - 1], i, a[i]);
 				MPI_Abort (MPI_COMM_WORLD, 1);
 			}
+			//else printf("[%d] ", a[i]);
 		}
 	}				// Root process end
 	else
