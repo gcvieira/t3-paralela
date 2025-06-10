@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
 #endif
 	}
 
-	printf("Finalizado sem erros.");
+	if (my_rank == 0) printf("Finalizado sem erros.");
 
 	MPI_Finalize();
 	return 0;
