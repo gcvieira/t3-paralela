@@ -3,7 +3,7 @@
 #include <mpi.h>
 
 #define DEBUG 1
-#define ARRAY_SIZE 40
+#define ARRAY_SIZE 1000000
 
 int *interleaving(int vetor[], int tam) {
 	int *vetor_auxiliar = (int *)malloc(sizeof(int) * tam);
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 #endif
 	}
 
-	int delta = 10;
+	int delta = 63000;
 
 	if (tam_vetor <= delta) {
 		bs(tam_vetor, vetor);  // ordena localmente
