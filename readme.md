@@ -5,8 +5,15 @@ Trabalho sobre ordenacao de vetores utilizando computacao paralela utilizando MP
 ## Running
 
 Sequencial:
-	gcc sequencial.c -o s
-	./s
+```
+gcc sequencial.c -o s
+./s
+```
 
 mpi:
-TBD
+```
+ladcomp -env mpicc mpi_simples.c -o mpis
+ladcomp -env mpicc mpi_optimized.c -o mpio -lm
+srun -N 1 -n 7 ./mpis
+srun -N 1 -n 8 ./mpio 90000
+```
